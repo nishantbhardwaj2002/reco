@@ -9,16 +9,16 @@ public class User {
 
     public static model.User signin (final String username, final String password) {
 
-        final String passwordHash = new repository.jdbc.User().getPasswordHash(username);
-        if(passwordHash != null && BCrypt.checkpw(password, passwordHash)) {
-            return new repository.jdbc.User().retrieve(username);
+        final model.User user = new repository.jdbc.User().retrieveUsingUsername(username);
+        if(user != null && BCrypt.checkpw(password, user.getPasswordHash())) {
+            return user;
         } else {
             return null;
         }
     }
 
-    public static model.User create (final String username, final String password) {
+    public static model.User create (final String username, final String passwordHash) {
 
-        return new repository.jdbc.User().create(username, password);
+        return new repository.jdbc.User().create(username, passwordHash);
     }
 }

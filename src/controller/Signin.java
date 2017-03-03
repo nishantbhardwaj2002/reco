@@ -24,8 +24,7 @@ public class Signin extends HttpServlet {
 
         final User user = service.User.signin(username, password);
         if(user != null) {
-            req.getSession().setAttribute("id", user.getId());
-            req.getSession().setAttribute("username", user.getUsername());
+            req.getSession().setAttribute("user", user);
             resp.sendRedirect("newsfeed.jsp");
         } else {
             resp.sendRedirect("signin.jsp");

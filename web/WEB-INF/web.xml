@@ -4,6 +4,10 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+    <welcome-file-list>
+        <welcome-file>signin.jsp</welcome-file>
+    </welcome-file-list>
+
     <servlet>
         <servlet-name>signin</servlet-name>
         <servlet-class>controller.Signin</servlet-class>
@@ -31,4 +35,21 @@
         <url-pattern>/signout</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>newsfeed</servlet-name>
+        <servlet-class>controller.Newsfeed</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>newsfeed</servlet-name>
+        <url-pattern>/newsfeed</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>newsItem</servlet-name>
+        <servlet-class>controller.NewsItem</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>newsItem</servlet-name>
+        <url-pattern>/newsItem</url-pattern>
+    </servlet-mapping>
 </web-app>
