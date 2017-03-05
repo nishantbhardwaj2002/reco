@@ -1,19 +1,11 @@
-<%@ page import="model.User" %><%--
+<%@ page import="reco.model.UserModel" %>
+<%--
   Created by IntelliJ IDEA.
-  User: nishantbhardwaj2002
+  UserModel: nishantbhardwaj2002
   Date: 3/3/17
   Time: 1:14 AM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    if(session == null || session.getAttribute("user") == null) {
-        response.sendRedirect("signin.jsp");
-    } else {
-        final User user = (User) session.getAttribute("user");
-        session.setAttribute("username", user.getUsername());
-    }
-%>
 <html>
     <head>
         <title>Newsfeed</title>
@@ -23,9 +15,7 @@
             function loadNewsItem(id) {
 
                 var xhttp = new XMLHttpRequest();
-
                 xhttp.onreadystatechange = function() {
-
                     if (this.readyState == 4 && this.status == 200) {
                         const responseJson = JSON.parse(this.responseText);
 
@@ -40,22 +30,20 @@
                         document.getElementById("newsListItem" + id).appendChild(paraItem);
                     }
                 };
-                xhttp.open("POST", "newsItem", true);
+                xhttp.open("POST", "newsItemService", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xhttp.send("id=" + id);
-
-                return false;
             }
 
             function loadNews() {
 
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
-
                     if (this.readyState == 4 && this.status == 200) {
                         if(this.responseText == "") {
                             return;
                         }
+                        // Server should make sure that news don't repeat.
                         const responseJson = JSON.parse(this.responseText);
                         for(var id in responseJson){
                             context = id;
@@ -80,7 +68,7 @@
         </script>
     </head>
     <body>
-        Hi <%= session.getAttribute("username") %>!!!
+        Hi ${username}!!!
         <br />
         <a href="signout">Signout</a>
         <br />

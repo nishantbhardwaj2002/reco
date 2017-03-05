@@ -1,13 +1,13 @@
-package model;
+package reco.model;
 
 /**
  * Created by nishantbhardwaj2002 on 3/3/17.
  */
-public class User {
+public class UserModel {
 
     private String id;
     private String username;
-    private String passwordHash;
+    private String password;
 
     public String getId() {
         return id;
@@ -25,20 +25,20 @@ public class User {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserModel{" +
                 "id='" + id + '\'' +
                 ", username='" + username + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

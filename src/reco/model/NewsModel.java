@@ -1,9 +1,9 @@
-package model;
+package reco.model;
 
 /**
  * Created by nishantbhardwaj2002 on 3/3/17.
  */
-public class News {
+public class NewsModel {
 
     private String id;
     private String head;
@@ -35,7 +35,7 @@ public class News {
 
     @Override
     public String toString() {
-        return "News{" +
+        return "NewsModel{" +
                 "id='" + id + '\'' +
                 ", head='" + head + '\'' +
                 ", body='" + body + '\'' +

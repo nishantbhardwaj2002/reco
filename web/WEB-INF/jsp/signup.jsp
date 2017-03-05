@@ -5,12 +5,6 @@
   Time: 1:13 AM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    if(session != null && session.getAttribute("user") != null) {
-        response.sendRedirect("newsfeed.jsp");
-    }
-%>
 <html>
     <head>
         <title>Signup</title>
@@ -24,6 +18,6 @@
             <input type="submit" value="Signup">
         </form>
         <br />
-        <a href="signin.jsp">Signin</a>
+        <a href="signin">Signin</a>
     </body>
 </html>
