@@ -5,18 +5,21 @@
   Time: 11:59 PM
   To change this template use File | Settings | File Templates.
 --%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <html>
     <head>
         <title>Signin</title>
     </head>
     <body>
-        <form action="signin" method="post">
-            Username : <input type="text" name="username" />
+        <form:form action="signin" method="post">
+            <form:label path="username">Username</form:label>
+            <form:input path="username" />
             <br />
-            Password : <input type="password" name="password" />
+            <form:label path="password">Password</form:label>
+            <form:password path="password" />
             <br />
-            <input type="submit" value="Signin" />
-        </form>
+            <input type="submit" value="Submit" />
+        </form:form>
         <br />
         <a href="signup">Signup</a>
     </body>

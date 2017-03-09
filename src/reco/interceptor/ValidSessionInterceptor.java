@@ -8,15 +8,15 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by nishantbhardwaj2002 on 3/5/17.
  */
-public class InvalidSessionInterceptor extends HandlerInterceptorAdapter {
+public class ValidSessionInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(final HttpServletRequest req, final HttpServletResponse resp, final Object handler) throws Exception {
 
-        // if session is invalid, redirect to signin page.
-        // signup and signin pages are excluded in SpringConfiguration.
-        if(req.getSession() == null || req.getSession().getAttribute("userModel") == null) {
-            resp.sendRedirect("signin");
+        // if session is valid, redirect to newsfeed page.
+        // only signup and signin pages are included in SpringConfiguration.
+        if(req.getSession() != null && req.getSession().getAttribute("userModel") != null) {
+            resp.sendRedirect("newsfeed");
             return false;
         }
 

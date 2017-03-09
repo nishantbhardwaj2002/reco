@@ -17,7 +17,7 @@ public class UserJdbcRepository implements UserRepository {
             return null;
         } else {
             final UserModel userModel = new UserModel();
-            userModel.setId("2");
+            userModel.setUserId("2");
             userModel.setUsername(username);
             userModel.setPassword(passwordHash);
             return userModel;
@@ -25,11 +25,12 @@ public class UserJdbcRepository implements UserRepository {
     }
 
     @Override
-    public UserModel retrieve(final String id) {
+    public UserModel retrieve(final String userId) {
 
-        if(id.equals("1")) {
+        if(userId.equals("1")) {
             final UserModel userModel = new UserModel();
-            userModel.setId("1");
+
+            userModel.setUserId("1");
             userModel.setUsername("nishant");
             userModel.setPassword("$2a$06$.05ZxTl1amBs0WtYYXlY..veNK2yWiOv6ER13mob./CKWT70yxlMi");
 
@@ -44,7 +45,7 @@ public class UserJdbcRepository implements UserRepository {
 
         if(username.equals("nishant")) {
             final UserModel userModel = new UserModel();
-            userModel.setId("1");
+            userModel.setUserId("1");
             userModel.setUsername("nishant");
             userModel.setPassword("$2a$06$.05ZxTl1amBs0WtYYXlY..veNK2yWiOv6ER13mob./CKWT70yxlMi");
 

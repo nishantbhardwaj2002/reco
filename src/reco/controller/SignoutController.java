@@ -17,6 +17,6 @@ public class SignoutController {
     public String signoutPage(final HttpServletRequest req) {
 
         req.getSession().invalidate();
-        return "signin";
+        return "redirect:signin";
     }
 }

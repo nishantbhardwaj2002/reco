@@ -1,4 +1,3 @@
-<%@ page import="reco.model.UserModel" %>
 <%--
   Created by IntelliJ IDEA.
   UserModel: nishantbhardwaj2002
@@ -12,27 +11,26 @@
         <script>
             var context = "";
 
-            function loadNewsItem(id) {
+            function loadNewsItem(newsId) {
 
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
-                        const responseJson = JSON.parse(this.responseText);
 
-                        var paraItem = document.getElementById("newsListItem" + id + "BodyPara");
+                        var paraItem = document.getElementById("newsListItem" + newsId + "BodyPara");
                         if(paraItem) {
                             paraItem.parentNode.removeChild(paraItem);
                         }
                         paraItem = document.createElement("p");
-                        paraItem.setAttribute("id", "newsListItem" + id + "BodyPara");
-                        paraItem.appendChild(document.createTextNode(responseJson[id]));
+                        paraItem.setAttribute("id", "newsListItem" + newsId + "BodyPara");
+                        paraItem.appendChild(document.createTextNode(this.responseText));
 
-                        document.getElementById("newsListItem" + id).appendChild(paraItem);
+                        document.getElementById("newsListItem" + newsId).appendChild(paraItem);
                     }
                 };
-                xhttp.open("POST", "newsItemService", true);
+                xhttp.open("POST", "newsItem", true);
                 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send("id=" + id);
+                xhttp.send("newsId=" + newsId);
             }
 
             function loadNews() {
@@ -40,21 +38,19 @@
                 var xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
-                        if(this.responseText == "") {
-                            return;
-                        }
+
                         // Server should make sure that news don't repeat.
                         const responseJson = JSON.parse(this.responseText);
-                        for(var id in responseJson){
-                            context = id;
+                        for(var newsId in responseJson){
+                            context = newsId;
 
                             const listItem = document.createElement("li");
-                            listItem.setAttribute("id", "newsListItem" + id);
+                            listItem.setAttribute("id", "newsListItem" + newsId);
 
                             const paraItem = document.createElement("p");
-                            paraItem.setAttribute("id", "newsListItem" + id + "HeadPara");
-                            paraItem.setAttribute("onClick", "loadNewsItem(" + id + ")");
-                            paraItem.appendChild(document.createTextNode(responseJson[id]))
+                            paraItem.setAttribute("id", "newsListItem" + newsId + "HeadPara");
+                            paraItem.setAttribute("onClick", "loadNewsItem(" + newsId + ")");
+                            paraItem.appendChild(document.createTextNode(responseJson[newsId]))
 
                             listItem.appendChild(paraItem);
                             document.getElementById("newsList").appendChild(listItem);
@@ -68,9 +64,9 @@
         </script>
     </head>
     <body>
-        Hi ${username}!!!
-        <br />
         <a href="signout">Signout</a>
+        <br />
+        Hi ${username}!!!
         <br />
         <ul id="newsList"></ul>
         <input type="button" value="Load" onclick="loadNews()"/>

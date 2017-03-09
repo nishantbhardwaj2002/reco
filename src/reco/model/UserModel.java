@@ -5,16 +5,16 @@ package reco.model;
  */
 public class UserModel {
 
-    private String id;
+    private String userId;
     private String username;
     private String password;
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(final String id) {
-        this.id = id;
+    public void setUserId(final String userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -36,7 +36,7 @@ public class UserModel {
     @Override
     public String toString() {
         return "UserModel{" +
-                "id='" + id + '\'' +
+                "userId='" + userId + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';

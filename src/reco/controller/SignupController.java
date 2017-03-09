@@ -2,6 +2,7 @@ package reco.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,17 +26,14 @@ public class SignupController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String signupPage(final HttpServletRequest req) {
+    public String signupPage(final Model model) {
 
-        if(req.getSession() != null && req.getSession().getAttribute("userModel") != null) {
-            return "redirect:newsfeed";
-        } else {
-            return "signup";
-        }
+        model.addAttribute("command", new UserModel());
+        return "signup";
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String signupForm(@ModelAttribute("UserModel") final UserModel userModel, final HttpServletRequest req) {
+    @RequestMapping(method = RequestMethod.POST)
+    public String signupForm(@ModelAttribute("command") final UserModel userModel, final HttpServletRequest req) {
 
         final UserModel createdUserModel = userService.signup(userModel.getUsername(), userModel.getPassword());
         if(createdUserModel != null) {

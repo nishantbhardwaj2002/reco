@@ -5,16 +5,16 @@ package reco.model;
  */
 public class NewsModel {
 
-    private String id;
+    private String newsId;
     private String head;
     private String body;
 
-    public String getId() {
-        return id;
+    public String getNewsId() {
+        return newsId;
     }
 
-    public void setId(final String id) {
-        this.id = id;
+    public void setNewsId(final String newsId) {
+        this.newsId = newsId;
     }
 
     public String getHead() {
@@ -36,7 +36,7 @@ public class NewsModel {
     @Override
     public String toString() {
         return "NewsModel{" +
-                "id='" + id + '\'' +
+                "newsId='" + newsId + '\'' +
                 ", head='" + head + '\'' +
                 ", body='" + body + '\'' +
                 '}';

@@ -8,6 +8,5 @@ import reco.model.NewsModel;
 public interface NewsRepository {
 
     NewsModel create (final String head, final String body);
-    NewsModel retrieve (final String id);
-    NewsModel retrieveUsingId (final String id);
+    NewsModel retrieve (final String newsId);
 }
