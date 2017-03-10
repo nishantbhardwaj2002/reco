@@ -49,7 +49,7 @@
 
                             const paraItem = document.createElement("p");
                             paraItem.setAttribute("id", "newsListItem" + newsId + "HeadPara");
-                            paraItem.setAttribute("onClick", "loadNewsItem(" + newsId + ")");
+                            paraItem.setAttribute("onClick", "loadNewsItem('" + newsId + "')");
                             paraItem.appendChild(document.createTextNode(responseJson[newsId]))
 
                             listItem.appendChild(paraItem);

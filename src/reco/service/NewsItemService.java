@@ -3,7 +3,7 @@ package reco.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reco.model.NewsModel;
-import reco.repository.jdbc.NewsJdbcRepository;
+import reco.repository.dynamoDb.NewsDynamoDbRepository;
 
 /**
  * Created by nishantbhardwaj2002 on 3/3/17.
@@ -11,16 +11,16 @@ import reco.repository.jdbc.NewsJdbcRepository;
 @Service
 public class NewsItemService {
     
-    private final NewsJdbcRepository newsJdbcRepository;
+    private final NewsDynamoDbRepository newsDynamoDbRepository;
 
     @Autowired
-    public NewsItemService(final NewsJdbcRepository newsJdbcRepository) {
-        this.newsJdbcRepository = newsJdbcRepository;
+    public NewsItemService(final NewsDynamoDbRepository newsDynamoDbRepository) {
+        this.newsDynamoDbRepository = newsDynamoDbRepository;
     }
 
 
     public NewsModel getNewsItem (final String newsId) {
 
-        return newsJdbcRepository.retrieve(newsId);
+        return newsDynamoDbRepository.retrieve(newsId);
     }
 }
