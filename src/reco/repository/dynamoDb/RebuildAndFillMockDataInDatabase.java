@@ -27,6 +27,7 @@ public class RebuildAndFillMockDataInDatabase {
     }
 
     public void doIt() {
+
         deleteTable(userTableName);
         deleteTable(newsTableName);
 
@@ -43,8 +44,7 @@ public class RebuildAndFillMockDataInDatabase {
         try {
             System.out.println("Issuing DeleteTable request for " + tableName);
             table.delete();
-            System.out.println("Waiting for " + tableName
-                    + " to be deleted... this may take a while...");
+            System.out.println("Waiting for " + tableName + " to be deleted... this may take a while...");
             table.waitForDelete();
 
         } catch (final Exception e) {
@@ -152,29 +152,29 @@ public class RebuildAndFillMockDataInDatabase {
 
             item = new Item()
                     .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                    .withString("Head", "Human walks on mars!")
-                    .withString("Body", "First human to walk on mars! Big moment for humans!");
+                    .withString("NewsHead", "Human walks on mars!")
+                    .withString("NewsBody", "First human to walk on mars! Big moment for humans!");
 
             table.putItem(item);
 
             item = new Item()
                     .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                    .withString("Head", "Bill Morison turns 1000 today!")
-                    .withString("Body", "Bill Morison becomes first known human to live this long!");
+                    .withString("NewsHead", "Bill Morison turns 1000 today!")
+                    .withString("NewsBody", "Bill Morison becomes first known human to live this long!");
 
             table.putItem(item);
 
             item = new Item()
                     .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                    .withString("Head", "Dogs start talking to humans!")
-                    .withString("Body", "Researchers from India genetically modified a labrador which can now talk to humans!");
+                    .withString("NewsHead", "Dogs start talking to humans!")
+                    .withString("NewsBody", "Researchers from India genetically modified a labrador which can now talk to humans!");
 
             table.putItem(item);
 
             item = new Item()
                     .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                    .withString("Head", "15 year old from NYC becomes the youngest self-made trillionaire!")
-                    .withString("Body", "CEO of AI-based-toys maker startup AiTo, becomes youngest trillionaire at the age of 15 years and 4 months! Pledges to donate 99% to Bill and Melinda Gates foundation!");
+                    .withString("NewsHead", "15 year old from NYC becomes the youngest self-made trillionaire!")
+                    .withString("NewsBody", "CEO of AI-based-toys maker startup AiTo, becomes youngest trillionaire at the age of 15 years and 4 months! Pledges to donate 99% to Bill and Melinda Gates foundation!");
 
             table.putItem(item);
 

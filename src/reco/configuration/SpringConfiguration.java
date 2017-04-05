@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -36,6 +35,6 @@ public class SpringConfiguration extends WebMvcConfigurerAdapter {
                 .excludePathPatterns("/signup", "/signin");
 
         registry.addInterceptor(new ValidSessionInterceptor())
-                .addPathPatterns("/signup", "signin");
+                .addPathPatterns("/signup", "/signin");
     }
 }

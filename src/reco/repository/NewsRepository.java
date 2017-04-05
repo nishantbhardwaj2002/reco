@@ -11,5 +11,5 @@ public interface NewsRepository {
 
     NewsModel create (final String head, final String body);
     NewsModel retrieve (final String newsId);
-    List retrieve ();
+    List retrieveAll ();
 }

@@ -34,15 +34,15 @@ public class NewsDynamoDbRepository implements NewsRepository {
 
         final NewsModel newsModel = new NewsModel();
         newsModel.setNewsId(UUID.randomUUID().toString().replaceAll("-", ""));
-        newsModel.setHead(head);
-        newsModel.setBody(body);
+        newsModel.setNewsHead(head);
+        newsModel.setNewsBody(body);
 
         final Table table = dynamoDbClient.getDynamoDb().getTable(newsTableName);
 
         final Item item = new Item()
                 .withPrimaryKey("NewsId", newsModel.getNewsId())
-                .withString("Head", newsModel.getHead())
-                .withString("Body", newsModel.getBody());
+                .withString("NewsHead", newsModel.getNewsHead())
+                .withString("NewsBody", newsModel.getNewsBody());
 
         table.putItem(item);
 
@@ -58,14 +58,14 @@ public class NewsDynamoDbRepository implements NewsRepository {
 
         final NewsModel newsModel = new NewsModel();
         newsModel.setNewsId(item.getString("NewsId"));
-        newsModel.setHead(item.getString("Head"));
-        newsModel.setBody(item.getString("Body"));
+        newsModel.setNewsHead(item.getString("NewsHead"));
+        newsModel.setNewsBody(item.getString("NewsBody"));
 
         return newsModel;
     }
 
     @Override
-    public List retrieve() {
+    public List retrieveAll() {
 
         final Table table = dynamoDbClient.getDynamoDb().getTable(newsTableName);
 
@@ -78,8 +78,8 @@ public class NewsDynamoDbRepository implements NewsRepository {
 
             final NewsModel newsModel = new NewsModel();
             newsModel.setNewsId(item.getString("NewsId"));
-            newsModel.setHead(item.getString("Head"));
-            newsModel.setBody(item.getString("Body"));
+            newsModel.setNewsHead(item.getString("NewsHead"));
+            newsModel.setNewsBody(item.getString("NewsBody"));
 
             newsModelList.add(newsModel);
         }

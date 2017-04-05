@@ -26,7 +26,7 @@ public class SigninController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String signinPage(Model model) {
+    public String signinPage(final Model model) {
 
         model.addAttribute("command", new UserModel());
         return "signin";

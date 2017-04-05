@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <html>
-    <head>
+    <Head>
         <title>Newsfeed</title>
         <script>
             var context = "";
@@ -62,13 +62,13 @@
                 xhttp.send("context=" + context);
             }
         </script>
-    </head>
-    <body>
+    </Head>
+    <Body>
         <a href="signout">Signout</a>
         <br />
         Hi ${username}!!!
         <br />
         <ul id="newsList"></ul>
         <input type="button" value="Load" onclick="loadNews()"/>
-    </body>
+    </Body>
 </html>

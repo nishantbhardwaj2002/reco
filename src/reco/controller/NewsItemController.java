@@ -26,8 +26,8 @@ public class NewsItemController extends HttpServlet {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    protected String newsItemPage (@RequestParam String newsId) {
+    protected String newsItemPage (@RequestParam final String newsId) {
 
-        return newsItemService.getNewsItem(newsId).getBody();
+        return newsItemService.getNewsItem(newsId).getNewsBody();
     }
 }

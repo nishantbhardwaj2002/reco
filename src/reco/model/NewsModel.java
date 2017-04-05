@@ -6,8 +6,8 @@ package reco.model;
 public class NewsModel {
 
     private String newsId;
-    private String head;
-    private String body;
+    private String newsHead;
+    private String newsBody;
 
     public String getNewsId() {
         return newsId;
@@ -17,28 +17,28 @@ public class NewsModel {
         this.newsId = newsId;
     }
 
-    public String getHead() {
-        return head;
+    public String getNewsHead() {
+        return newsHead;
     }
 
-    public void setHead(final String head) {
-        this.head = head;
+    public void setNewsHead(final String newsHead) {
+        this.newsHead = newsHead;
     }
 
-    public String getBody() {
-        return body;
+    public String getNewsBody() {
+        return newsBody;
     }
 
-    public void setBody(final String body) {
-        this.body = body;
+    public void setNewsBody(final String newsBody) {
+        this.newsBody = newsBody;
     }
 
     @Override
     public String toString() {
         return "NewsModel{" +
                 "newsId='" + newsId + '\'' +
-                ", head='" + head + '\'' +
-                ", body='" + body + '\'' +
+                ", newsHead='" + newsHead + '\'' +
+                ", newsBody='" + newsBody + '\'' +
                 '}';
     }
 }

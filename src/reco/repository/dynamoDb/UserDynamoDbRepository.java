@@ -21,14 +21,12 @@ import static reco.repository.dynamoDb.Constants.userTableName;
 public class UserDynamoDbRepository implements UserRepository {
 
     private final DynamoDbClient dynamoDbClient;
-    private final RebuildAndFillMockDataInDatabase rebuildAndFillMockDataInDatabase;
 
     @Autowired
     public UserDynamoDbRepository(final DynamoDbClient dynamoDbClient, final RebuildAndFillMockDataInDatabase rebuildAndFillMockDataInDatabase) {
         this.dynamoDbClient = dynamoDbClient;
-        this.rebuildAndFillMockDataInDatabase = rebuildAndFillMockDataInDatabase;
+        rebuildAndFillMockDataInDatabase.doIt();
     }
-
 
     @Override
     public UserModel create(final String username, final String password) {
@@ -67,8 +65,6 @@ public class UserDynamoDbRepository implements UserRepository {
 
     @Override
     public UserModel retrieveUsingUsername(final String username) {
-
-        rebuildAndFillMockDataInDatabase.doIt();
 
         final Table table = dynamoDbClient.getDynamoDb().getTable(userTableName);
         final Index index = table.getIndex(userTableGsiOnUsernameName);

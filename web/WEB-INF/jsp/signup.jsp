@@ -7,10 +7,10 @@
 --%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <html>
-    <head>
+    <Head>
         <title>Signup</title>
-    </head>
-    <body>
+    </Head>
+    <Body>
         <form:form action="signup" method="post">
             <form:label path="username">Username</form:label>
             <form:input path="username" />
@@ -22,5 +22,5 @@
         </form:form>
         <br />
         <a href="signin">Signin</a>
-    </body>
+    </Body>
 </html>
