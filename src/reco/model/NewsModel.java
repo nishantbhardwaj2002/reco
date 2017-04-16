@@ -8,6 +8,7 @@ public class NewsModel {
     private String newsId;
     private String newsHead;
     private String newsBody;
+    private double[] newsFeatureVector;
 
     public String getNewsId() {
         return newsId;
@@ -33,12 +34,21 @@ public class NewsModel {
         this.newsBody = newsBody;
     }
 
+    public double[] getNewsFeatureVector() {
+        return newsFeatureVector;
+    }
+
+    public void setNewsFeatureVector(final double[] newsFeatureVector) {
+        this.newsFeatureVector = newsFeatureVector;
+    }
+
     @Override
     public String toString() {
         return "NewsModel{" +
                 "newsId='" + newsId + '\'' +
                 ", newsHead='" + newsHead + '\'' +
                 ", newsBody='" + newsBody + '\'' +
+                ", newsFeatureVector=" + newsFeatureVector +
                 '}';
     }
 }

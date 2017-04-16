@@ -9,10 +9,7 @@ import org.springframework.stereotype.Repository;
 import reco.model.NewsModel;
 import reco.repository.NewsRepository;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static reco.repository.dynamoDb.Constants.newsTableName;
 
@@ -30,19 +27,21 @@ public class NewsDynamoDbRepository implements NewsRepository {
     }
 
     @Override
-    public NewsModel create(final String head, final String body) {
+    public NewsModel create(final String head, final String body, final double[] featureVector) {
 
         final NewsModel newsModel = new NewsModel();
         newsModel.setNewsId(UUID.randomUUID().toString().replaceAll("-", ""));
         newsModel.setNewsHead(head);
         newsModel.setNewsBody(body);
+        newsModel.setNewsFeatureVector(featureVector);
 
         final Table table = dynamoDbClient.getDynamoDb().getTable(newsTableName);
 
         final Item item = new Item()
                 .withPrimaryKey("NewsId", newsModel.getNewsId())
                 .withString("NewsHead", newsModel.getNewsHead())
-                .withString("NewsBody", newsModel.getNewsBody());
+                .withString("NewsBody", newsModel.getNewsBody())
+                .withString("NewsFeatureVector", Arrays.toString(newsModel.getNewsFeatureVector()));
 
         table.putItem(item);
 
@@ -61,6 +60,13 @@ public class NewsDynamoDbRepository implements NewsRepository {
         newsModel.setNewsHead(item.getString("NewsHead"));
         newsModel.setNewsBody(item.getString("NewsBody"));
 
+        final String[] featureVectorStringArray = item.getString("NewsFeatureVector").replaceAll("[\\[\\] ]", "").split(",");
+
+        final double[] featureVector = new double[featureVectorStringArray.length];
+        for(int i = 0; i < featureVector.length; i++)
+            featureVector[i] = Double.parseDouble(featureVectorStringArray[i]);
+        newsModel.setNewsFeatureVector(featureVector);
+
         return newsModel;
     }
 
@@ -71,7 +77,7 @@ public class NewsDynamoDbRepository implements NewsRepository {
 
         final ItemCollection<ScanOutcome> items = table.scan();
 
-        List newsModelList = new LinkedList<NewsModel>();
+        final List newsModelList = new LinkedList<NewsModel>();
         final Iterator<Item> iterator = items.iterator();
         while (iterator.hasNext()) {
             final Item item = iterator.next();
@@ -80,6 +86,13 @@ public class NewsDynamoDbRepository implements NewsRepository {
             newsModel.setNewsId(item.getString("NewsId"));
             newsModel.setNewsHead(item.getString("NewsHead"));
             newsModel.setNewsBody(item.getString("NewsBody"));
+
+            final String[] featureVectorStringArray = item.getString("NewsFeatureVector").replaceAll("[\\[\\] ]", "").split(",");
+
+            final double[] featureVector = new double[featureVectorStringArray.length];
+            for(int i = 0; i < featureVector.length; i++)
+                featureVector[i] = Double.parseDouble(featureVectorStringArray[i]);
+            newsModel.setNewsFeatureVector(featureVector);
 
             newsModelList.add(newsModel);
         }

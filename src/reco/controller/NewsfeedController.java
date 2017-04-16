@@ -38,8 +38,8 @@ public class NewsfeedController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    protected String newsfeedAjax(@RequestParam final String context) {
+    protected String newsfeedAjax(@RequestParam final String context, final HttpServletRequest req) {
 
-        return gson.toJson(newsRecommendationService.getRecommendedNewsHeads(context));
+        return gson.toJson(newsRecommendationService.getRecommendedNewsHeads(context, (UserModel) req.getSession().getAttribute("userModel")));
     }
 }

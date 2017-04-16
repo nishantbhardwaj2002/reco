@@ -1,13 +1,17 @@
 package reco.repository.dynamoDb;
 
+import au.com.bytecode.opencsv.CSVReader;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.*;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reco.service.Lda;
 
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static reco.repository.dynamoDb.Constants.*;
@@ -30,12 +34,15 @@ public class RebuildAndFillMockDataInDatabase {
 
         deleteTable(userTableName);
         deleteTable(newsTableName);
+        deleteTable(userActivityTableName);
 
         createTable(userTableName, 10L, 5L, "UserId", "S");
         createTable(newsTableName, 10L, 5L, "NewsId", "S");
+        createTable(userActivityTableName, 10L, 5L, "UserId", "S");
 
         fillMockNews();
         fillMockUsers();
+        fillMockUserActivity();
     }
 
     private void deleteTable(final String tableName) {
@@ -134,6 +141,7 @@ public class RebuildAndFillMockDataInDatabase {
                     .withPrimaryKey("UserId", UUID.randomUUID().toString().replaceAll("-", ""))
                     .withString("Username", "nishant")
                     .withString("Password", BCrypt.hashpw("chiku", BCrypt.gensalt()));
+
             table.putItem(item);
 
         } catch (final Exception e) {
@@ -148,39 +156,31 @@ public class RebuildAndFillMockDataInDatabase {
         try {
             System.out.println("Adding data to " + newsTableName);
 
-            Item item;
+            final CSVReader csvReader = new CSVReader(new FileReader("/home/nishantbhardwaj2002/Downloads/uci-news-aggregator.csv"));
 
-            item = new Item()
-                    .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                    .withString("NewsHead", "Human walks on mars!")
-                    .withString("NewsBody", "First human to walk on mars! Big moment for humans!");
+            int lim = 10;
 
-            table.putItem(item);
+            final String[] headers = csvReader.readNext();
 
-            item = new Item()
-                    .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                    .withString("NewsHead", "Bill Morison turns 1000 today!")
-                    .withString("NewsBody", "Bill Morison becomes first known human to live this long!");
+            String[] nextLine;
+            while ( (nextLine = csvReader.readNext()) != null && lim-- > 0) {
 
-            table.putItem(item);
+                final Item item = new Item()
+                        .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
+                        .withString("NewsHead", nextLine[1])
+                        .withString("NewsBody", nextLine[2])
+                        .withString("NewsFeatureVector", Arrays.toString(Lda.infer(nextLine[1])));
 
-            item = new Item()
-                    .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                    .withString("NewsHead", "Dogs start talking to humans!")
-                    .withString("NewsBody", "Researchers from India genetically modified a labrador which can now talk to humans!");
-
-            table.putItem(item);
-
-            item = new Item()
-                    .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                    .withString("NewsHead", "15 year old from NYC becomes the youngest self-made trillionaire!")
-                    .withString("NewsBody", "CEO of AI-based-toys maker startup AiTo, becomes youngest trillionaire at the age of 15 years and 4 months! Pledges to donate 99% to Bill and Melinda Gates foundation!");
-
-            table.putItem(item);
+                table.putItem(item);
+            }
 
         } catch (final Exception e) {
             System.err.println("Failed to create item in " + newsTableName);
             System.err.println(e.getMessage());
         }
+    }
+
+    private void fillMockUserActivity() {
+
     }
 }
