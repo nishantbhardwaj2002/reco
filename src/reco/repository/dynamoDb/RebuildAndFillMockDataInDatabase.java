@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.model.*;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reco.service.Lda;
+import reco.utils.LatentDirichletAllocation;
 
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -23,11 +23,14 @@ import static reco.repository.dynamoDb.Constants.*;
 public class RebuildAndFillMockDataInDatabase {
 
     private final DynamoDbClient dynamoDbClient;
+    private final LatentDirichletAllocation latentDirichletAllocation;
 
     @Autowired
-    public RebuildAndFillMockDataInDatabase(final DynamoDbClient dynamoDbClient) {
+    public RebuildAndFillMockDataInDatabase(final DynamoDbClient dynamoDbClient,
+                                            final LatentDirichletAllocation latentDirichletAllocation) {
 
         this.dynamoDbClient = dynamoDbClient;
+        this.latentDirichletAllocation = latentDirichletAllocation;
     }
 
     public void doIt() {
@@ -156,20 +159,18 @@ public class RebuildAndFillMockDataInDatabase {
         try {
             System.out.println("Adding data to " + newsTableName);
 
-            final CSVReader csvReader = new CSVReader(new FileReader("/home/nishantbhardwaj2002/Downloads/uci-news-aggregator.csv"));
-
-            int lim = 10;
+            final CSVReader csvReader = new CSVReader(new FileReader("/home/nishantbhardwaj2002/Documents/news.csv"));
 
             final String[] headers = csvReader.readNext();
 
             String[] nextLine;
-            while ( (nextLine = csvReader.readNext()) != null && lim-- > 0) {
+            while ( (nextLine = csvReader.readNext()) != null) {
 
                 final Item item = new Item()
                         .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
                         .withString("NewsHead", nextLine[1])
                         .withString("NewsBody", nextLine[2])
-                        .withString("NewsFeatureVector", Arrays.toString(Lda.infer(nextLine[1])));
+                        .withString("NewsFeatureVector", Arrays.toString(latentDirichletAllocation.infer(nextLine[2])));
 
                 table.putItem(item);
             }

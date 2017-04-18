@@ -42,7 +42,16 @@
                         // Server should make sure that news don't repeat.
                         const responseJson = JSON.parse(this.responseText);
                         for(var newsId in responseJson){
-                            context = newsId;
+                            if(context.localeCompare("") == 0) {
+                                context = newsId;
+                            } else {
+                                context = context + "," + newsId;
+                            }
+
+                            if(newsId.localeCompare("-1") == 0) {
+                                alert("Error : No more news to load.");
+                                continue;
+                            }
 
                             const listItem = document.createElement("li");
                             listItem.setAttribute("id", "newsListItem" + newsId);

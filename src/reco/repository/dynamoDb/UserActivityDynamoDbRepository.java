@@ -80,8 +80,10 @@ public class UserActivityDynamoDbRepository implements UserActivityRepository {
 
         final Item item = table.getItem("UserId", userId);
 
-        // TODO
-        if(item == null) return null;
+        if(item == null) {
+            return null;
+        }
+
         final UserActivityModel userActivityModel= new UserActivityModel();
         userActivityModel.setUserId(item.getString("UserId"));
         userActivityModel.setNewsClicked(item.getString("NewsClicked"));
