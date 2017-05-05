@@ -14,7 +14,7 @@ import java.util.Random;
 public class GradientDescent {
 
     private double alpha = 0.0001;
-    private int iters = 1000;
+    private int iters = 1000000;
 
     /**
      * Find gradient using mallet.

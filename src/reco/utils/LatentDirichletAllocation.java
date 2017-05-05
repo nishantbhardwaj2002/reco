@@ -35,7 +35,7 @@ public class LatentDirichletAllocation {
         pipeList.add( new TokenSequence2FeatureSequence());
 
         instances = new InstanceList(new SerialPipes(pipeList));
-        instances.addThruPipe(new FileIterator("/home/nishantbhardwaj2002/Downloads/bbc-fulltext/bbc"));
+        instances.addThruPipe(new FileIterator("/home/nishantbhardwaj2002/workspace/reco/1/reco/src/reco/resources/bbc"));
 
         // final Reader fileReader = new InputStreamReader(new FileInputStream(new File("/home/nishantbhardwaj2002/Downloads/uci-news-aggregator-titles.csv")), "UTF-8");
         // instances.addThruPipe(new CsvIterator(fileReader, Pattern.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"), 3, 2, 1)); // data, label, name fields

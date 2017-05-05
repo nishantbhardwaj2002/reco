@@ -1,5 +1,7 @@
 package reco.service;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.gson.JsonObject;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +23,8 @@ import java.util.*;
 public class NewsRecommendationService {
 
     // Number of news (latest clicked) to consider for gradient calculation.
-    private final int numberOfNewsToConsiderMax = 10;
-    private final int numberOfNewsToLoadMax = 10;
+    private final int numberOfNewsToConsiderMax = 1000;
+    private final int numberOfNewsToLoadMax = 1000;
 
     private final NewsRepository newsRepository;
     private final UserActivityRepository userActivityRepository;
@@ -40,8 +42,7 @@ public class NewsRecommendationService {
 
     public JsonObject getRecommendedNewsHeads(final String context, final UserModel userModel) {
 
-        final String[] contextStringArray = context.split(",");
-        final Set<String> alreadyLoadedNews = new HashSet(Arrays.asList(contextStringArray));
+        final Set<String> alreadyLoadedNews = new HashSet(Arrays.asList(context.split(",")));
 
         final UserActivityModel userActivityModel = userActivityRepository.retrieve(userModel.getUserId());
 
@@ -74,8 +75,11 @@ public class NewsRecommendationService {
         final String newsClickedConcatenated = userActivityModel.getNewsClicked();
         final String[] newsClicked = newsClickedConcatenated.split(",");
 
+        System.out.println("clicked news : " + Arrays.toString(newsClicked));
+
         final NewsModel[] clickedNewsModels = new NewsModel[newsClicked.length];
         final double[][] clickedNewsFeatureVectors = new double[newsClicked.length][LatentDirichletAllocation.numberOfTopics];
+
         for(int i = 0; i < newsClicked.length; i++) {
             clickedNewsModels[i] = newsRepository.retrieve(newsClicked[i]);
             clickedNewsFeatureVectors[i] = clickedNewsModels[i].getNewsFeatureVector();
@@ -87,38 +91,41 @@ public class NewsRecommendationService {
 
         final double[] theta = gradientDescent.findCustom(Arrays.copyOfRange(clickedNewsFeatureVectors, newsClicked.length - numberOfNewsToConsiderActual, newsClicked.length), y);
 
+        System.out.println("theta : " + Arrays.toString(theta));
 
         // Calculate ranks
         final List<NewsModel> newsModelList = newsRepository.retrieveAll();
-        final Map<String, String> recommendedNewsMap = new HashMap();
-        final Map<Double, String> recommendedNewsSortedMap = new TreeMap();
+        final Multimap<Double, NewsModel> recommendedNewsSortedMultimap =  MultimapBuilder.treeKeys().arrayListValues().build();
 
-        int numberOfNewsLoaded = 0;
         for(final NewsModel newsModel : newsModelList) {
 
-            if(numberOfNewsLoaded >= numberOfNewsToLoadMax || alreadyLoadedNews.contains(newsModel.getNewsId())) {
+            if(alreadyLoadedNews.contains(newsModel.getNewsId())) {
                 continue;
             }
-            numberOfNewsLoaded++;
 
             final ArrayRealVector thetaRealVector = new ArrayRealVector(theta);
             final ArrayRealVector featureVector = new ArrayRealVector(newsModel.getNewsFeatureVector());
             final double score = thetaRealVector.dotProduct(featureVector);
 
-            recommendedNewsMap.put(newsModel.getNewsId(), newsModel.getNewsHead() + ", score : " + score);
-            recommendedNewsSortedMap.put(score, newsModel.getNewsId());
+            newsModel.setNewsHead(newsModel.getNewsHead() + score);
+            recommendedNewsSortedMultimap.put(score, newsModel);
         }
 
         // Create json object return.
         final JsonObject jsonObject = new JsonObject();
 
-        final Set<Double> set = recommendedNewsSortedMap.keySet();
-        final Double[] recommendedNewsSortedMapKeysArray = set.toArray(new Double[recommendedNewsSortedMap.size()]);
-        final List<Double> recommendedNewsSortedMapKeysList = Arrays.asList(recommendedNewsSortedMapKeysArray);
-        Collections.reverse(recommendedNewsSortedMapKeysList);
+        final ArrayList<NewsModel> values = new ArrayList<>(recommendedNewsSortedMultimap.values());
+        Collections.reverse(values);
 
-        for(final Double recommendedNewsSortedMapKey : recommendedNewsSortedMapKeysList) {
-            jsonObject.addProperty(recommendedNewsSortedMap.get(recommendedNewsSortedMapKey), recommendedNewsMap.get(recommendedNewsSortedMap.get(recommendedNewsSortedMapKey)));
+        int numberOfNewsLoaded = 0;
+        for(final NewsModel newsModel : values) {
+
+            if(numberOfNewsLoaded >= numberOfNewsToLoadMax) {
+                break;
+            }
+            numberOfNewsLoaded++;
+
+            jsonObject.addProperty(newsModel.getNewsId(), newsModel.getNewsHead());
         }
 
         if(numberOfNewsLoaded ==  0) {

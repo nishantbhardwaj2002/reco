@@ -8,19 +8,23 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <html>
     <Head>
+        <link rel="stylesheet" href="http://localhost:8080/resources/signinPageStyle.css" />
         <title>Signup</title>
     </Head>
     <Body>
-        <form:form action="signup" method="post">
+    <div class="form">
+    <form:form class="login-form" action="signup" method="post">
             <form:label path="username">Username</form:label>
             <form:input path="username" />
             <br />
             <form:label path="password">Password</form:label>
             <form:password path="password" />
             <br />
-            <input type="submit" value="Submit" />
+            <br />
+        <button type="submit">Signup</button>
         </form:form>
         <br />
-        <a href="signin">Signin</a>
+        <p class="message">Already registered? <a href="signin">Signin</a></p>
+    </div>
     </Body>
 </html>

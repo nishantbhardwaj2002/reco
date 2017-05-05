@@ -159,7 +159,7 @@ public class RebuildAndFillMockDataInDatabase {
         try {
             System.out.println("Adding data to " + newsTableName);
 
-            final CSVReader csvReader = new CSVReader(new FileReader("/home/nishantbhardwaj2002/Documents/news.csv"));
+            final CSVReader csvReader = new CSVReader(new FileReader("/home/nishantbhardwaj2002/workspace/reco/1/reco/src/reco/resources/news.csv"));
 
             final String[] headers = csvReader.readNext();
 
