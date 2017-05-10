@@ -23,14 +23,9 @@ public class NewsItemService {
         this.userActivityRepository = userActivityRepository;
     }
 
-
     public NewsModel getNewsItem (final UserModel userModel, final String newsId) {
 
-        if(userActivityRepository == null) System.out.print("ERROR : user act repo null\n");
-        else if(userModel == null) System.out.print("ERROR : user act repo null\n");
-        else System.out.println("yo boys all right");
         final UserActivityModel userActivityModel = userActivityRepository.update(userModel.getUserId(), newsId);
-        System.out.println("News clicked : " + userActivityModel.getNewsClicked());
         return newsRepository.retrieve(newsId);
     }
 }

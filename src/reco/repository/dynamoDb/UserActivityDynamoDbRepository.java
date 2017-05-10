@@ -41,25 +41,21 @@ public class UserActivityDynamoDbRepository implements UserActivityRepository {
         return userActivityModel;
     }
 
+    /**
+     * News clicked is simply a String of the form "newsId9,newsId7..."
+     */
     @Override
     public UserActivityModel update(final String userId, final String newsId) {
 
-        System.out.print("update user act tbl : " + userId + " " + newsId);
         final Table table = dynamoDbClient.getDynamoDb().getTable(userActivityTableName);
-        if(table != null) {
-            System.out.println("table not null");
-        } else {
-            System.out.println("table null");
-        }
+
         final UserActivityModel userActivityModel = new UserActivityModel();
         userActivityModel.setUserId(userId);
 
         final Item existingItem = table.getItem("UserId", userId);
         if(existingItem != null) {
-            System.out.println("item exists");
             userActivityModel.setNewsClicked(existingItem.get("NewsClicked") + "," + newsId);
         } else {
-            System.out.println("item doesnt exists");
             userActivityModel.setNewsClicked(newsId);
         }
 
@@ -67,9 +63,8 @@ public class UserActivityDynamoDbRepository implements UserActivityRepository {
                 .withPrimaryKey("UserId", userActivityModel.getUserId())
                 .withString("NewsClicked", userActivityModel.getNewsClicked());
 
-        System.out.println("putting item");
         table.putItem(item);
-        System.out.println("done");
+
         return userActivityModel;
     }
 

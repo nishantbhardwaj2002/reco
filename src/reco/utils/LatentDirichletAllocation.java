@@ -18,8 +18,7 @@ import java.util.ArrayList;
 public class LatentDirichletAllocation {
 
     public static int numberOfTopics = 10;
-
-    private int numberOfIterations = 100;
+    private static int numberOfIterations = 1000;
 
     private ParallelTopicModel model;
     private InstanceList instances;
@@ -29,16 +28,13 @@ public class LatentDirichletAllocation {
         final ArrayList pipeList = new ArrayList<Pipe>();
 
         pipeList.add(new Input2CharSequence());
-        pipeList.add( new CharSequenceLowercase());
-        pipeList.add( new CharSequence2TokenSequence());
-        pipeList.add( new TokenSequenceRemoveStopwords());
-        pipeList.add( new TokenSequence2FeatureSequence());
+        pipeList.add(new CharSequenceLowercase());
+        pipeList.add(new CharSequence2TokenSequence());
+        pipeList.add(new TokenSequenceRemoveStopwords());
+        pipeList.add(new TokenSequence2FeatureSequence());
 
         instances = new InstanceList(new SerialPipes(pipeList));
         instances.addThruPipe(new FileIterator("/home/nishantbhardwaj2002/workspace/reco/1/reco/src/reco/resources/bbc"));
-
-        // final Reader fileReader = new InputStreamReader(new FileInputStream(new File("/home/nishantbhardwaj2002/Downloads/uci-news-aggregator-titles.csv")), "UTF-8");
-        // instances.addThruPipe(new CsvIterator(fileReader, Pattern.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"), 3, 2, 1)); // data, label, name fields
 
         model = new ParallelTopicModel(numberOfTopics);
         model.addInstances(instances);
@@ -53,10 +49,6 @@ public class LatentDirichletAllocation {
 
         final TopicInferencer inferencer = model.getInferencer();
         final double[] testProbabilities = inferencer.getSampledDistribution(testingInstanceList.get(0), 10, 1, 5);
-
-        /*for(double prob : testProbabilities) {
-            System.out.println("test probability : " + prob);
-        }*/
 
         return testProbabilities;
     }

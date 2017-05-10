@@ -12,7 +12,6 @@ import reco.service.NewsItemService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 
 /**
  * Created by nishantbhardwaj2002 on 3/3/17.
@@ -33,6 +32,6 @@ public class NewsItemController extends HttpServlet {
     protected String newsItemPage (@RequestParam final String newsId, final HttpServletRequest req) {
 
         final NewsModel newsModel = newsItemService.getNewsItem((UserModel)req.getSession().getAttribute("userModel"), newsId);
-        return newsModel.getNewsBody() + "\n" + Arrays.toString(newsModel.getNewsFeatureVector());
+        return newsModel.getNewsBody();
     }
 }

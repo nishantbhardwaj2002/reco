@@ -8,8 +8,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <html>
     <Head>
-        <link rel="stylesheet" href="http://localhost:8080/resources/signinPageStyle.css" />
-        <title>Signup</title>
+        <link rel="stylesheet" href="http://localhost:8080/resources/colorlib/css/style.css" />
+        <title>Signup (Reco)</title>
     </Head>
     <Body>
     <div class="form">

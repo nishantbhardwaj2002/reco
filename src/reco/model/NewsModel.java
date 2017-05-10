@@ -1,5 +1,7 @@
 package reco.model;
 
+import java.util.Arrays;
+
 /**
  * Created by nishantbhardwaj2002 on 3/3/17.
  */
@@ -8,6 +10,8 @@ public class NewsModel {
     private String newsId;
     private String newsHead;
     private String newsBody;
+    private String thumbnailUrl;
+    private String url;
     private double[] newsFeatureVector;
 
     public String getNewsId() {
@@ -34,6 +38,22 @@ public class NewsModel {
         this.newsBody = newsBody;
     }
 
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(final String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public double[] getNewsFeatureVector() {
         return newsFeatureVector;
     }
@@ -48,7 +68,9 @@ public class NewsModel {
                 "newsId='" + newsId + '\'' +
                 ", newsHead='" + newsHead + '\'' +
                 ", newsBody='" + newsBody + '\'' +
-                ", newsFeatureVector=" + newsFeatureVector +
+                ", thumbnailUrl='" + thumbnailUrl + '\'' +
+                ", url='" + url + '\'' +
+                ", newsFeatureVector=" + Arrays.toString(newsFeatureVector) +
                 '}';
     }
 }

@@ -1,6 +1,5 @@
 package reco.controller;
 
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "newsfeed")
 public class NewsfeedController {
 
-    private static final Gson gson = new Gson();
     private final NewsRecommendationService newsRecommendationService;
 
     @Autowired
@@ -40,6 +38,6 @@ public class NewsfeedController {
     @ResponseBody
     protected String newsfeedAjax(@RequestParam final String context, final HttpServletRequest req) {
 
-        return gson.toJson(newsRecommendationService.getRecommendedNewsHeads(context, (UserModel) req.getSession().getAttribute("userModel")));
+        return newsRecommendationService.getRecommendedNewsHeads(context, (UserModel) req.getSession().getAttribute("userModel"));
     }
 }

@@ -1,17 +1,20 @@
 package reco.repository.dynamoDb;
 
-import au.com.bytecode.opencsv.CSVReader;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.*;
+import org.jsoup.Jsoup;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reco.model.newsFromSource.NewsFromSourceModel;
+import reco.model.newsFromSource.Result;
 import reco.utils.LatentDirichletAllocation;
+import reco.utils.NewsFromSources;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static reco.repository.dynamoDb.Constants.*;
@@ -159,8 +162,26 @@ public class RebuildAndFillMockDataInDatabase {
         try {
             System.out.println("Adding data to " + newsTableName);
 
-            final CSVReader csvReader = new CSVReader(new FileReader("/home/nishantbhardwaj2002/workspace/reco/1/reco/src/reco/resources/news.csv"));
+            final NewsFromSources nfs = new NewsFromSources();
+            final NewsFromSourceModel nfsModel = nfs.unmarshalling(nfs.get(1));
+            final List<Result> newsList = nfsModel.getResponse().getResults();
 
+            for (Result result : newsList ) {
+
+                final String newsBodyToText = Jsoup.parse(result.getFields().getBody()).text();
+                final Item item = new Item()
+                        .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
+                        .withString("NewsHead", result.getWebTitle())
+                        .withString("NewsBody", newsBodyToText)
+                        .withString("ThumbnailUrl", result.getFields().getThumbnail())
+                        .withString("Url", result.getWebUrl())
+                        .withString("NewsFeatureVector", Arrays.toString(latentDirichletAllocation.infer(newsBodyToText)));
+
+                table.putItem(item);
+            }
+
+            /*
+            final CSVReader csvReader = new CSVReader(new FileReader("/home/nishantbhardwaj2002/workspace/reco/1/reco/src/reco/resources/news.csv"));
             final String[] headers = csvReader.readNext();
 
             String[] nextLine;
@@ -174,6 +195,8 @@ public class RebuildAndFillMockDataInDatabase {
 
                 table.putItem(item);
             }
+            */
+
 
         } catch (final Exception e) {
             System.err.println("Failed to create item in " + newsTableName);

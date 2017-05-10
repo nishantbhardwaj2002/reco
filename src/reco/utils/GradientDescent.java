@@ -2,7 +2,6 @@ package reco.utils;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -13,44 +12,32 @@ import java.util.Random;
 @Component
 public class GradientDescent {
 
-    private double alpha = 0.0001;
+    private double alpha = 0.00001;
     private int iters = 1000000;
-
-    /**
-     * Find gradient using mallet.
-     */
-    @Deprecated
-    public double[] find(final double[][] x, final double[] y) {
-        final OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
-        regression.newSampleData(y, x);
-
-        return regression.estimateRegressionParameters();
-    }
 
     /**
      * Custom implementation to find gradient. Uses commons.math for operations.
      */
-    public double[] findCustom(final double[][] x, final double[] y) {
+    public double[] find(final double[][] x, final double[] y) {
 
         final double[] theta = new double[x[0].length];
         for(int i = 0; i < theta.length; i++) {
             theta[i] = new Random().nextDouble();
         }
 
-        return grad(x, y, theta, alpha, iters);
+        return grad(x, y, theta);
 
     }
 
-    public double[] grad(final double[][] x,
-                                final double[] y,
-                                final double[] theta,
-                                final double alpha,
-                                final int iters) {
+    private double[] grad(final double[][] x,
+                          final double[] y,
+                          final double[] theta) {
 
         int m = y.length;
 
         final RealMatrix xRealMatrix = MatrixUtils.createRealMatrix(x);
         final RealMatrix yRealMatrix = MatrixUtils.createColumnRealMatrix(y);
+
         RealMatrix thetaRealMatrix = MatrixUtils.createColumnRealMatrix(theta);
 
         for(int i = 0; i < iters; i++) {
@@ -65,7 +52,9 @@ public class GradientDescent {
         return thetaRealMatrix.getColumn(0);
     }
 
-    public double cost(double[][] x, double[] y, double[] theta){
+    private double cost(final double[][] x,
+                        final double[] y,
+                        final double[] theta) {
 
         final RealMatrix xRealMatrix = MatrixUtils.createRealMatrix(x);
         final RealMatrix yRealMatrix = MatrixUtils.createColumnRealMatrix(y);
@@ -75,10 +64,10 @@ public class GradientDescent {
         final RealMatrix xIntoThetaMinusY = xIntoTheta.subtract(yRealMatrix);
         final RealMatrix xIntoThetaMinusYSquared = xIntoThetaMinusY.power(2);
 
-        int m = y.length;
+        final int m = y.length;
         final RealMatrix xIntoThetaMinusYSquaredBy2m = xIntoThetaMinusYSquared.scalarMultiply((double)1/(double)(2 * m));
 
-        double[][] res = xIntoThetaMinusYSquaredBy2m.getData();
+        final double[][] res = xIntoThetaMinusYSquaredBy2m.getData();
         double sum = 0;
         for(int i = 0; i < res.length; i++) {
             for(int j = 0; j < res[i].length; i++) {

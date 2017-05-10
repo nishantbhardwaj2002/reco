@@ -9,7 +9,13 @@ import java.util.List;
  */
 public interface NewsRepository {
 
-    NewsModel create (final String head, final String body, final double[] featureVector);
+    NewsModel create (final String head,
+                      final String body,
+                      final String thumbnailUrl,
+                      final String url,
+                      final double[] featureVector);
+
     NewsModel retrieve (final String newsId);
+
     List retrieveAll ();
 }

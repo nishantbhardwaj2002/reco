@@ -2,6 +2,7 @@ package reco.service;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,11 @@ import java.util.*;
 @Service
 public class NewsRecommendationService {
 
+    private static final Gson gson = new Gson();
+
     // Number of news (latest clicked) to consider for gradient calculation.
-    private final int numberOfNewsToConsiderMax = 1000;
-    private final int numberOfNewsToLoadMax = 1000;
+    private final int numberOfNewsToConsiderMax = 3;
+    private final int numberOfNewsToLoadMax = 10;
 
     private final NewsRepository newsRepository;
     private final UserActivityRepository userActivityRepository;
@@ -40,16 +43,16 @@ public class NewsRecommendationService {
         this.gradientDescent = gradientDescent;
     }
 
-    public JsonObject getRecommendedNewsHeads(final String context, final UserModel userModel) {
+    public String getRecommendedNewsHeads(final String context, final UserModel userModel) {
 
         final Set<String> alreadyLoadedNews = new HashSet(Arrays.asList(context.split(",")));
 
         final UserActivityModel userActivityModel = userActivityRepository.retrieve(userModel.getUserId());
 
+        // No recommendation.
         if(userActivityModel == null) {
 
             final List<NewsModel> newsModelList = newsRepository.retrieveAll();
-            final Map recommendedNewsMap = new HashMap<String, String>();
 
             int numberOfNewsLoaded = 0;
             final JsonObject jsonObj = new JsonObject();
@@ -60,41 +63,53 @@ public class NewsRecommendationService {
                 }
                 numberOfNewsLoaded++;
 
-                recommendedNewsMap.put(newsModel.getNewsId(), newsModel.getNewsHead());
-                jsonObj.addProperty(newsModel.getNewsId(), newsModel.getNewsHead());
+                final JsonObject newsItemJson = new JsonObject();
+                newsItemJson.addProperty("head", newsModel.getNewsHead());
+                newsItemJson.addProperty("thumbnailUrl", newsModel.getThumbnailUrl());
+                newsItemJson.addProperty("url", newsModel.getUrl());
+
+
+                jsonObj.addProperty(newsModel.getNewsId(), gson.toJson(newsItemJson));
             }
 
             if(numberOfNewsLoaded ==  0) {
                 jsonObj.addProperty("-1", "ERROR : No more news to load.");
             }
-            return jsonObj;
+
+            return gson.toJson(jsonObj);
         }
 
 
-        // Calculate theta
+
+        // Calculate theta vector
         final String newsClickedConcatenated = userActivityModel.getNewsClicked();
         final String[] newsClicked = newsClickedConcatenated.split(",");
 
-        System.out.println("clicked news : " + Arrays.toString(newsClicked));
+        System.out.println("newsClicked : " + Arrays.toString(newsClicked));
 
-        final NewsModel[] clickedNewsModels = new NewsModel[newsClicked.length];
-        final double[][] clickedNewsFeatureVectors = new double[newsClicked.length][LatentDirichletAllocation.numberOfTopics];
+        final int numberOfNewsToConsiderActual = (newsClicked.length < numberOfNewsToConsiderMax) ? newsClicked.length : numberOfNewsToConsiderMax;
 
-        for(int i = 0; i < newsClicked.length; i++) {
-            clickedNewsModels[i] = newsRepository.retrieve(newsClicked[i]);
+        final NewsModel[] clickedNewsModels = new NewsModel[numberOfNewsToConsiderActual];
+        final double[][] clickedNewsFeatureVectors = new double[numberOfNewsToConsiderActual][LatentDirichletAllocation.numberOfTopics];
+
+        for(int i = 0; i < numberOfNewsToConsiderActual; i++) {
+            clickedNewsModels[i] = newsRepository.retrieve(newsClicked[newsClicked.length - numberOfNewsToConsiderActual + i]);
             clickedNewsFeatureVectors[i] = clickedNewsModels[i].getNewsFeatureVector();
         }
 
-        final int numberOfNewsToConsiderActual = (newsClicked.length < numberOfNewsToConsiderMax) ? newsClicked.length : numberOfNewsToConsiderMax;
         final double[] y = new double[numberOfNewsToConsiderActual];
         Arrays.fill(y, 1);
 
-        final double[] theta = gradientDescent.findCustom(Arrays.copyOfRange(clickedNewsFeatureVectors, newsClicked.length - numberOfNewsToConsiderActual, newsClicked.length), y);
+        final double[] theta = gradientDescent.find(clickedNewsFeatureVectors, y);
 
-        System.out.println("theta : " + Arrays.toString(theta));
+        System.out.println("Theta : " + Arrays.toString(theta));
 
-        // Calculate ranks
+
+
+        // Calculate scores
         final List<NewsModel> newsModelList = newsRepository.retrieveAll();
+
+        // Multimap from google guava. Doesn't remove any of the items with same keys.
         final Multimap<Double, NewsModel> recommendedNewsSortedMultimap =  MultimapBuilder.treeKeys().arrayListValues().build();
 
         for(final NewsModel newsModel : newsModelList) {
@@ -103,15 +118,17 @@ public class NewsRecommendationService {
                 continue;
             }
 
-            final ArrayRealVector thetaRealVector = new ArrayRealVector(theta);
+            final ArrayRealVector thetaVector = new ArrayRealVector(theta);
             final ArrayRealVector featureVector = new ArrayRealVector(newsModel.getNewsFeatureVector());
-            final double score = thetaRealVector.dotProduct(featureVector);
+            final double score = thetaVector.dotProduct(featureVector);
 
-            newsModel.setNewsHead(newsModel.getNewsHead() + score);
+            newsModel.setNewsHead(newsModel.getNewsHead() + " (Score: " + score + ")");
             recommendedNewsSortedMultimap.put(score, newsModel);
         }
 
-        // Create json object return.
+
+
+        // Create json string to return.
         final JsonObject jsonObject = new JsonObject();
 
         final ArrayList<NewsModel> values = new ArrayList<>(recommendedNewsSortedMultimap.values());
@@ -125,12 +142,18 @@ public class NewsRecommendationService {
             }
             numberOfNewsLoaded++;
 
-            jsonObject.addProperty(newsModel.getNewsId(), newsModel.getNewsHead());
+            final JsonObject newsItemJson = new JsonObject();
+            newsItemJson.addProperty("head", newsModel.getNewsHead());
+            newsItemJson.addProperty("thumbnailUrl", newsModel.getThumbnailUrl());
+            newsItemJson.addProperty("url", newsModel.getUrl());
+
+            jsonObject.addProperty(newsModel.getNewsId(), gson.toJson(newsItemJson));
         }
 
         if(numberOfNewsLoaded ==  0) {
             jsonObject.addProperty("-1", "ERROR : No more news to load.");
         }
-        return jsonObject;
+
+        return gson.toJson(jsonObject);
     }
 }

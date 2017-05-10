@@ -27,12 +27,18 @@ public class NewsDynamoDbRepository implements NewsRepository {
     }
 
     @Override
-    public NewsModel create(final String head, final String body, final double[] featureVector) {
+    public NewsModel create(final String head,
+                            final String body,
+                            final String thumbnailUrl,
+                            final String url,
+                            final double[] featureVector) {
 
         final NewsModel newsModel = new NewsModel();
         newsModel.setNewsId(UUID.randomUUID().toString().replaceAll("-", ""));
         newsModel.setNewsHead(head);
         newsModel.setNewsBody(body);
+        newsModel.setThumbnailUrl(thumbnailUrl);
+        newsModel.setUrl(url);
         newsModel.setNewsFeatureVector(featureVector);
 
         final Table table = dynamoDbClient.getDynamoDb().getTable(newsTableName);
@@ -41,6 +47,8 @@ public class NewsDynamoDbRepository implements NewsRepository {
                 .withPrimaryKey("NewsId", newsModel.getNewsId())
                 .withString("NewsHead", newsModel.getNewsHead())
                 .withString("NewsBody", newsModel.getNewsBody())
+                .withString("ThumbnailUrl", newsModel.getThumbnailUrl())
+                .withString("Url", newsModel.getUrl())
                 .withString("NewsFeatureVector", Arrays.toString(newsModel.getNewsFeatureVector()));
 
         table.putItem(item);
@@ -59,6 +67,8 @@ public class NewsDynamoDbRepository implements NewsRepository {
         newsModel.setNewsId(item.getString("NewsId"));
         newsModel.setNewsHead(item.getString("NewsHead"));
         newsModel.setNewsBody(item.getString("NewsBody"));
+        newsModel.setThumbnailUrl(item.getString("ThumbnailUrl"));
+        newsModel.setUrl(item.getString("Url"));
 
         final String[] featureVectorStringArray = item.getString("NewsFeatureVector").replaceAll("[\\[\\] ]", "").split(",");
 
@@ -86,6 +96,8 @@ public class NewsDynamoDbRepository implements NewsRepository {
             newsModel.setNewsId(item.getString("NewsId"));
             newsModel.setNewsHead(item.getString("NewsHead"));
             newsModel.setNewsBody(item.getString("NewsBody"));
+            newsModel.setThumbnailUrl(item.getString("ThumbnailUrl"));
+            newsModel.setUrl(item.getString("Url"));
 
             final String[] featureVectorStringArray = item.getString("NewsFeatureVector").replaceAll("[\\[\\] ]", "").split(",");
 
