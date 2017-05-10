@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 public class NewsFromSources {
 
     private static final Gson gson = new Gson();
-    private static String apiKey = "a3faa229-4ee4-4a55-b274-8ba74d026f50";
+    private static String apiKey = "test";
     private static String endpoint = "https://content.guardianapis.com/search";
 
     private final HttpClient client = HttpClientBuilder.create().build();
