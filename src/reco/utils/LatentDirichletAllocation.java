@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class LatentDirichletAllocation {
 
     public static int numberOfTopics = 10;
-    private static int numberOfIterations = 1000;
+    private static int numberOfIterations = 100;
 
     private ParallelTopicModel model;
     private InstanceList instances;

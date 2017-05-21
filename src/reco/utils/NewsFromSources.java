@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 public class NewsFromSources {
 
     private static final Gson gson = new Gson();
-    private static String apiKey = "a3faa229-4ee4-4a55-b274-8ba74d026f50";
+    private static String apiKey = "test";
     private static String endpoint = "https://content.guardianapis.com/search";
 
     private final HttpClient client = HttpClientBuilder.create().build();
@@ -27,7 +27,7 @@ public class NewsFromSources {
 
     public String get(final int pageNumber) throws IOException {
 
-        final String url = endpoint + "?" + apiKey + "&order-by=newest&order-date=published&show-fields=thumbnail,body&page-size=50&page=" + pageNumber;
+        final String url = endpoint + "?api-key=" + apiKey + "&order-by=newest&order-date=published&show-fields=thumbnail,body&page-size=50&page=" + pageNumber;
         final HttpGet req =  new HttpGet(url);
 
         final HttpResponse response = client.execute(req);

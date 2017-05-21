@@ -43,12 +43,12 @@ public class RebuildAndFillMockDataInDatabase {
         deleteTable(userActivityTableName);
 
         createTable(userTableName, 10L, 5L, "UserId", "S");
-        createTable(newsTableName, 10L, 5L, "NewsId", "S");
         createTable(userActivityTableName, 10L, 5L, "UserId", "S");
+        createTable(newsTableName, 10L, 5L, "NewsId", "S");
 
-        fillMockNews();
         fillMockUsers();
         fillMockUserActivity();
+        fillMockNews();
     }
 
     private void deleteTable(final String tableName) {
@@ -159,26 +159,27 @@ public class RebuildAndFillMockDataInDatabase {
     private void fillMockNews() {
 
         final Table table = dynamoDbClient.getDynamoDb().getTable(newsTableName);
-        try {
-            System.out.println("Adding data to " + newsTableName);
+        for(int i = 0; i < 5; i++) {
+            try {
+                System.out.println("Adding data to " + newsTableName);
 
-            final NewsFromSources nfs = new NewsFromSources();
-            final NewsFromSourceModel nfsModel = nfs.unmarshalling(nfs.get(1));
-            final List<Result> newsList = nfsModel.getResponse().getResults();
+                final NewsFromSources nfs = new NewsFromSources();
+                final NewsFromSourceModel nfsModel = nfs.unmarshalling(nfs.get(i+1));
+                final List<Result> newsList = nfsModel.getResponse().getResults();
 
-            for (Result result : newsList ) {
+                for (Result result : newsList) {
 
-                final String newsBodyToText = Jsoup.parse(result.getFields().getBody()).text();
-                final Item item = new Item()
-                        .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                        .withString("NewsHead", result.getWebTitle())
-                        .withString("NewsBody", newsBodyToText)
-                        .withString("ThumbnailUrl", result.getFields().getThumbnail())
-                        .withString("Url", result.getWebUrl())
-                        .withString("NewsFeatureVector", Arrays.toString(latentDirichletAllocation.infer(newsBodyToText)));
+                    final String newsBodyToText = Jsoup.parse(result.getFields().getBody()).text();
+                    final Item item = new Item()
+                            .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
+                            .withString("NewsHead", result.getWebTitle())
+                            .withString("NewsBody", newsBodyToText)
+                            .withString("ThumbnailUrl", (result.getFields().getThumbnail() == null)? "https://www.w3schools.com/css/img_fjords.jpg": result.getFields().getThumbnail())
+                            .withString("Url", result.getWebUrl())
+                            .withString("NewsFeatureVector", Arrays.toString(latentDirichletAllocation.infer(newsBodyToText)));
 
-                table.putItem(item);
-            }
+                    table.putItem(item);
+                }
 
             /*
             final CSVReader csvReader = new CSVReader(new FileReader("/home/nishantbhardwaj2002/workspace/reco/1/reco/src/reco/resources/news.csv"));
@@ -198,9 +199,11 @@ public class RebuildAndFillMockDataInDatabase {
             */
 
 
-        } catch (final Exception e) {
-            System.err.println("Failed to create item in " + newsTableName);
-            System.err.println(e.getMessage());
+            } catch (final Exception e) {
+                System.err.println("Failed to create item in " + newsTableName);
+                e.printStackTrace();
+                System.err.println(e.getStackTrace());
+            }
         }
     }
 
