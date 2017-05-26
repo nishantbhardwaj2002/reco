@@ -1,8 +1,6 @@
 package reco.model;
 
-/**
- * Created by nishantbhardwaj2002 on 3/3/17.
- */
+
 public class UserModel {
 
     private String userId;

@@ -13,9 +13,7 @@ import reco.service.NewsItemService;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by nishantbhardwaj2002 on 3/3/17.
- */
+
 @Controller
 @RequestMapping(value = "newsItem")
 public class NewsItemController extends HttpServlet {

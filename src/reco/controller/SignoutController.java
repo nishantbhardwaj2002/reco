@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by nishantbhardwaj2002 on 3/3/17.
- */
+
 @Controller
 @RequestMapping(value = "signout")
 public class SignoutController {

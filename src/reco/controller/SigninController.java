@@ -11,9 +11,7 @@ import reco.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by nishantbhardwaj2002 on 3/3/17.
- */
+
 @Controller
 @RequestMapping(value = "signin")
 public class SigninController {

@@ -5,9 +5,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Created by nishantbhardwaj2002 on 3/5/17.
- */
+
 public class InvalidSessionInterceptor extends HandlerInterceptorAdapter {
 
     @Override

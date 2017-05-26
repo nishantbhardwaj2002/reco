@@ -14,9 +14,7 @@ import java.util.UUID;
 import static reco.repository.dynamoDb.Constants.userTableGsiOnUsernameName;
 import static reco.repository.dynamoDb.Constants.userTableName;
 
-/**
- * Created by nishantbhardwaj2002 on 3/3/17.
- */
+
 @Repository
 public class UserDynamoDbRepository implements UserRepository {
 

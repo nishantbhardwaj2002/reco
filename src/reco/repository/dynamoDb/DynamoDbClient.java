@@ -5,9 +5,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by nishantbhardwaj2002 on 3/10/17.
- */
+
 @Component
 public class DynamoDbClient {
 

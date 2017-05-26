@@ -1,9 +1,7 @@
 <%--
   Created by IntelliJ IDEA.
-  UserModel: nishantbhardwaj2002
   Date: 3/3/17
   Time: 1:14 AM
-  To change this template use File | Settings | File Templates.
 --%>
 <html>
     <Head>

@@ -13,9 +13,7 @@ import java.util.*;
 
 import static reco.repository.dynamoDb.Constants.newsTableName;
 
-/**
- * Created by nishantbhardwaj2002 on 3/3/17.
- */
+
 @Repository
 public class NewsDynamoDbRepository implements NewsRepository {
 

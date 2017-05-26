@@ -19,9 +19,7 @@ import java.util.UUID;
 
 import static reco.repository.dynamoDb.Constants.*;
 
-/**
- * Created by nishantbhardwaj2002 on 3/10/17.
- */
+
 @Component
 public class RebuildAndFillMockDataInDatabase {
 
@@ -169,16 +167,24 @@ public class RebuildAndFillMockDataInDatabase {
 
                 for (Result result : newsList) {
 
+                    final String title = result.getWebTitle();
+                    final String thumbnail = result.getFields().getThumbnail();
+                    final String url = result.getWebUrl();
                     final String newsBodyToText = Jsoup.parse(result.getFields().getBody()).text();
-                    final Item item = new Item()
-                            .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
-                            .withString("NewsHead", result.getWebTitle())
-                            .withString("NewsBody", newsBodyToText)
-                            .withString("ThumbnailUrl", (result.getFields().getThumbnail() == null)? "https://www.w3schools.com/css/img_fjords.jpg": result.getFields().getThumbnail())
-                            .withString("Url", result.getWebUrl())
-                            .withString("NewsFeatureVector", Arrays.toString(latentDirichletAllocation.infer(newsBodyToText)));
+                    final String nfv = (newsBodyToText != null)? Arrays.toString(latentDirichletAllocation.infer(newsBodyToText)): null;
 
-                    table.putItem(item);
+                    if(title != null && thumbnail != null && url != null && nfv != null) {
+
+                        final Item item = new Item()
+                                .withPrimaryKey("NewsId", UUID.randomUUID().toString().replaceAll("-", ""))
+                                .withString("NewsHead", title)
+                                .withString("NewsBody", newsBodyToText)
+                                .withString("ThumbnailUrl", thumbnail)
+                                .withString("Url", url)
+                                .withString("NewsFeatureVector", nfv);
+
+                        table.putItem(item);
+                    }
                 }
 
             /*

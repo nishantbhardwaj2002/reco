@@ -2,9 +2,7 @@ package reco.model;
 
 import java.util.Arrays;
 
-/**
- * Created by nishantbhardwaj2002 on 3/3/17.
- */
+
 public class NewsModel {
 
     private String newsId;

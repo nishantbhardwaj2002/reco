@@ -1,8 +1,6 @@
 package reco.repository.dynamoDb;
 
-/**
- * Created by nishantbhardwaj2002 on 3/10/17.
- */
+
 public class Constants {
 
     public static final String userTableName = "UserTable";

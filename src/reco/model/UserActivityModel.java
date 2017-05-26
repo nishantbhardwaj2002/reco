@@ -1,8 +1,6 @@
 package reco.model;
 
-/**
- * Created by nishantbhardwaj2002 on 4/15/17.
- */
+
 public class UserActivityModel {
 
     private String userId;

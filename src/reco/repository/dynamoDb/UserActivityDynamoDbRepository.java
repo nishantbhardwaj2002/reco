@@ -9,9 +9,7 @@ import reco.repository.UserActivityRepository;
 
 import static reco.repository.dynamoDb.Constants.userActivityTableName;
 
-/**
- * Created by nishantbhardwaj2002 on 4/15/17.
- */
+
 @Repository
 public class UserActivityDynamoDbRepository implements UserActivityRepository {
 
